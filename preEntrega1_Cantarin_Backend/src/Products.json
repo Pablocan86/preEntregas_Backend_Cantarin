@@ -1,0 +1,46 @@
+[
+  {
+    "id": 1,
+    "title": "Bufanda Rarebase",
+    "description": "De lana como de la abuela",
+    "price": 5000,
+    "status": "true",
+    "thumbnail": "https://th.bing.com/th/id/OIP.gETcVZYJ1Nr_ZJBGmcBHjQHaJ4?w=136&h=181&c=7&r=0&o=5&dpr=1.5&pid=1.7",
+    "code": "Buf300",
+    "stock": 300,
+    "category": "Primavera"
+  },
+  {
+    "id": 2,
+    "title": "Remera lisa",
+    "description": "Remara sobria",
+    "price": 5000,
+    "status": "true",
+    "thumbnail": "https://th.bing.com/th/id/OIP.gETcVZYJ1Nr_ZJBGmcBHjQHaJ4?w=136&h=181&c=7&r=0&o=5&dpr=1.5&pid=1.7",
+    "code": "REM200",
+    "stock": 20,
+    "category": "Verano"
+  },
+  {
+    "id": 3,
+    "title": "Remera rayada",
+    "description": "Remara distinta",
+    "price": 5000,
+    "status": "true",
+    "thumbnail": "https://th.bing.com/th/id/OIP.gETcVZYJ1Nr_ZJBGmcBHjQHaJ4?w=136&h=181&c=7&r=0&o=5&dpr=1.5&pid=1.7",
+    "code": "REM201",
+    "stock": 20,
+    "category": "Primavera"
+  },
+  {
+    "id": 4,
+    "title": "Pantalon Oxford",
+    "description": "Un pase por la moda de antes",
+    "price": 5000,
+    "status": "true",
+    "thumbnail": "https://th.bing.com/th/id/OIP.gETcVZYJ1Nr_ZJBGmcBHjQHaJ4?w=136&h=181&c=7&r=0&o=5&dpr=1.5&pid=1.7",
+    "code": "PAN200",
+    "stock": 20,
+    "category": "Verano"
+  }
+]
