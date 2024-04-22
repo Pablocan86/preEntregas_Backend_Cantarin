@@ -99,7 +99,6 @@ class ProductManager {
       const products = await this.readProducts();
       const productoEncontrado = products.find((prod) => prod.id === id);
       if (!productoEncontrado) {
-        console.log("No existe producto para reemplazar");
         return;
       }
       //Creo el objeto nuevo para agregar con las opciones para que no se borre ninguna propiedad de no pasarla como parámetro

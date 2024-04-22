@@ -20,8 +20,15 @@ router.get("/api/carts/:cid", async (req, res) => {
     const idBuscado = parseInt(req.params.cid);
     console.log(idBuscado);
     const productsForCart = await managerC.getProductsForCart(idBuscado);
-    res.json({ products: productsForCart });
-  } catch (error) {}
+    if (productsForCart) {
+      res.json({ products: productsForCart });
+    } else {
+      res.json({ message: "No existe 🛒" });
+    }
+  } catch (error) {
+    console.error("No existe carrito");
+    res.status(500).send("No existen datos", error);
+  }
 });
 
 router.post("/api/carts/:cid/product/:pid", async (req, res) => {

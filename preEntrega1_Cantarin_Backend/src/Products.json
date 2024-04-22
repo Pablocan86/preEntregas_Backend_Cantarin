@@ -19,7 +19,7 @@
     "thumbnail": "https://th.bing.com/th/id/OIP.gETcVZYJ1Nr_ZJBGmcBHjQHaJ4?w=136&h=181&c=7&r=0&o=5&dpr=1.5&pid=1.7",
     "code": "REM200",
     "stock": 20,
-    "category": "Verano"
+    "category": "Negro"
   },
   {
     "id": 3,
@@ -41,6 +41,6 @@
     "thumbnail": "https://th.bing.com/th/id/OIP.gETcVZYJ1Nr_ZJBGmcBHjQHaJ4?w=136&h=181&c=7&r=0&o=5&dpr=1.5&pid=1.7",
     "code": "PAN200",
     "stock": 20,
-    "category": "Verano"
+    "category": "Primavera"
   }
 ]

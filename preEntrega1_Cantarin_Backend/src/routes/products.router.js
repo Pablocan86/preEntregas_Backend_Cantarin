@@ -80,8 +80,9 @@ router.put("/api/product/:id", async (req, res) => {
       req.body;
     const existente = products.filter((prod) => prod.id === idProduct);
     if (!existente) {
-      res.send("Producto no existe");
-    } else {
+      res.send(`No existe producto en la base de datos`);
+    }
+    if (existente) {
       await managerP.updateProduct(
         idProduct,
         title,
@@ -96,7 +97,7 @@ router.put("/api/product/:id", async (req, res) => {
     }
   } catch (error) {
     console.error("No se puede actualizar el producto", error);
-    res.status(500).send("El producto ya existe en la base de datos");
+    res.status(500).send("El producto no existe en la base de datos");
   }
 });
 
