@@ -44,7 +44,7 @@ router.post("/api/product", async (req, res) => {
       title,
       description,
       price,
-      status = "true",
+      status = true,
       thumbnail,
       code,
       stock,

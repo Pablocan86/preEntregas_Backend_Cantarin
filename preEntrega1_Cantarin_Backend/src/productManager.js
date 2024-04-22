@@ -10,7 +10,7 @@ class ProductManager {
     title,
     description,
     price,
-    status = "true",
+    status = true,
     thumbnail = [],
     code,
     stock,
