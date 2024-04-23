@@ -1,6 +1,6 @@
 # **REPOSITORIO PRE ENTREGAS BACKEND**
 
-### PRIMER PRE ENTREGA
+## <div style="color:blue;">PRIMER PRE ENTREGA</div>
 
 [Link del repositorio click aqui](https://github.com/Pablocan86/preEntregas_Backend_Cantarin/tree/main/preEntrega1_Cantarin_Backend)
 
@@ -98,13 +98,13 @@ GET: localhost:8080/api/carts/:cid
 
 ![imagen postman](./preEntrega1_Cantarin_Backend/src/images/products_carrito_no_existe.png)
 
-> \_AGREGA PRODUCTO A CARRITO Y SUMA CANTIDAD
+> _AGREGA PRODUCTO A CARRITO Y SUMA CANTIDAD_
 
 ```
 POST: localhost:8080/api/carts/:cid/product/:pid
 ```
 
-#### Si existe carrito
+#### Si existe carrito(agrega sino tira mensaje de que no existe carrito)
 
 ![imagen postman](./preEntrega1_Cantarin_Backend/src/images/agregar_product_carrito.png)
 
