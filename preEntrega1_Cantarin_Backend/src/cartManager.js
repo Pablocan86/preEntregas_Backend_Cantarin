@@ -96,15 +96,23 @@ class CartManager {
         }
         await fs.writeFile(this.cartsFile, JSON.stringify(carts, null, 2));
       }
-    } catch (error) {}
+    } catch (error) {
+      console.error("No se puede agregar producto o crear carrito", error);
+    }
   }
   //Este metodo agrega producto por id, me sirve para el método de arriba
   async addProduct(id) {
     try {
       const bd = await this.readBD();
       const existProduct = bd.find((prod) => prod.id === id);
-      return existProduct.id;
-    } catch (error) {}
+      if (existProduct) {
+        return existProduct.id;
+      } else {
+        console.log(`Producto con id: ${id} inexistente`);
+      }
+    } catch (error) {
+      console.error("No existe producto en la base de datos", error);
+    }
   }
   //Lectura del archivo Products.json
   async readBD() {

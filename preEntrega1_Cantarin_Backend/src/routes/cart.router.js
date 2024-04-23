@@ -36,9 +36,22 @@ router.post("/api/carts/:cid/product/:pid", async (req, res) => {
     const db = await managerC.readBD();
     const cartId = parseInt(req.params.cid);
     const productId = parseInt(req.params.pid);
-    await managerC.addToCart(productId, cartId);
     const addedProduct = db.find((prod) => prod.id === productId);
-    res.send(`Producto ${addedProduct.title} agregado al carrito`);
+    if (addedProduct) {
+      const carts = await managerC.readCart();
+      const existCart = carts.find((cart) => cart.id === cartId);
+      if (existCart) {
+        res.send(
+          `Producto ${addedProduct.title} agregado al carrito con id: ${existCart.id}`
+        );
+        await managerC.addToCart(productId, cartId);
+      } else {
+        res.send(`No existe carrito con id ${cartId}`);
+        return;
+      }
+    } else {
+      res.send(`Producto con ID: ${productId} inexistente en la base de datos`);
+    }
   } catch (error) {
     console.error("No se puede agregar el producto", error);
     res.status(500).send("Error de conexión");
