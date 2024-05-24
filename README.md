@@ -115,3 +115,43 @@ POST: localhost:8080/api/carts/:cid/product/:pid
 #### Después de agregar "Carts.json"
 
 ![imagen de visual studio](./preEntrega1_Cantarin_Backend/src/images/despues_de_agregar.png)
+
+## SEGUNDA PRE ENTREGA
+
+[Link del repositorio click aqui](https://github.com/Pablocan86/preEntregas_Backend_Cantarin/tree/main/preEntrega2_Cantarin_Backend)
+
+### RUTA RAIZ DEVOLUCIÓN OBJETO
+
+```
+GET: localhost:8080
+```
+
+![imagen postman](./preEntrega2_Cantarin_Backend/src/imagesReadme/ruta_raiz.png)
+
+### FILTRO LIMIT+PAGE+SORT+CATEGORY
+
+```
+GET: localhost:8080/?limit=2&page=2&sort=asc&category=camisas
+```
+
+![imagen postman](./preEntrega2_Cantarin_Backend/src/imagesReadme/ruta_raiz_filtros.png)
+
+### METODO POST PARA CREAR CARRITO VACIO
+
+```
+POST: localhost:8080/carts
+```
+
+### METODO DELETE PARA BORRAR PRODUCTO CARRITO
+
+```
+DELETE: localhost:8080/carts/(ID de carrito)/products/(_id de producto en carrito)
+```
+
+### METODO PUT PARA SUMAR CANTIDAD DE PRODUCTO EXISTENTE
+
+```
+PUT: localhost:8080/carts/(ID de carrito)/products/(_id de producto en carrito)
+```
+
+![imagen postman](./preEntrega2_Cantarin_Backend/src/imagesReadme/put_suma_quantity.png)

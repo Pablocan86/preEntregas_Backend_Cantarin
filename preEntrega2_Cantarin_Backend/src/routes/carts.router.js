@@ -14,7 +14,7 @@ router.get("/carts", async (req, res) => {
     console.error("No se encuentas carritos en la Base de datos", error);
   }
 });
-
+//Crea un carrito
 router.post("/carts", async (req, res) => {
   await cartManager.addCart();
   let carts = await cartModel.find();
@@ -44,28 +44,6 @@ router.post("/carts/:cid/products/:pid", async (req, res) => {
     await cartManager.addToCart(pid, cid);
     const carts = await cartModel.find();
     res.send({ carts });
-    // // const db = await managerC.readBD();
-    // const products = await productModel.find();
-    // // const cartId = parseInt(req.params.cid);
-    // const cartId = req.params.cid;
-    // // const productId = parseInt(req.params.pid);
-    // const productId = req.params.pid;
-    // const addedProduct = products.find((prod) => prod.id === productId);
-    // if (addedProduct) {
-    //   const existCart = await cartModel.find({ _id: cartId });
-
-    //   if (existCart) {
-    //     res.send(
-    //       `Producto ${addedProduct.title} agregado al carrito con id: ${existCart.id}`
-    //     );
-    //     // await managerC.addToCart(productId, cartId);
-    //   } else {
-    //     res.send(`No existe carrito con id ${cartId}`);
-    //     return;
-    //   }
-    // } else {
-    //   res.send(`Producto con ID: ${productId} inexistente en la base de datos`);
-    // }
   } catch (error) {
     console.error("No se puede agregar el producto", error);
     res.status(500).send("Error de conexión");
@@ -89,8 +67,7 @@ router.put("/carts/:cid/products/:pid", async (req, res) => {
     if (existProduct) {
       existProduct.quantity = existProduct.quantity + quantity;
       let result = await cartModel.updateOne({ _id: cid }, cart);
-
-      res.send({ Respuesta: "Producto agregado" });
+      res.send({ cart });
     } else {
       res.send({ Respuesta: "No existe producto en la base de datos" });
     }
@@ -130,19 +107,28 @@ router.delete("/carts/:uid", async (req, res) => {
 router.delete("/carts/:cid/products/:pid", async (req, res) => {
   try {
     let { cid, pid } = req.params;
-    const cart = await cartModel.findById(cid);
-    const vista = cart.products;
-    const existProduct = vista.find((p) => p.id === pid);
-    if (existProduct) {
-      cart.products.remove(existProduct);
-      let result = await cartModel.deleteOne({ _id: pid }, cart);
 
-      res.send({ Respuesta: "Producto borrado" });
-    } else {
-      res.send({ Respuesta: "No existe producto en la base de datos" });
+    const cart = await cartModel.findById(cid);
+    if (!cart) {
+      return res.status(404).send({ Respuesta: "Carrito no encontrado" });
     }
+
+    const existProduct = cart.products.find((p) => p.id === pid);
+    if (!existProduct) {
+      return res
+        .status(404)
+        .send({ Respuesta: "No existe producto en el carrito" });
+    }
+
+    // Eliminar el producto del array de productos
+    cart.products = cart.products.filter((p) => p.id !== pid);
+
+    // Guardar los cambios en el carrito
+    await cart.save();
+
+    res.send({ Respuesta: "Producto borrado" });
   } catch (error) {
-    res.status(504).send(error);
+    res.status(500).send({ error: error.message });
   }
 });
 

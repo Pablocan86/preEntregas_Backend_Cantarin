@@ -2,11 +2,6 @@ document.addEventListener("DOMContentLoaded", () => {
   const deleteButtons = document.querySelectorAll(".deleteButton");
   const addButton = document.querySelectorAll(".addButton");
 
-  addButton.forEach((button) => {
-    button.addEventListener("click", async () => {
-      console.log("hola");
-    });
-  });
   deleteButtons.forEach((button) => {
     button.addEventListener("click", async () => {
       const productId = button.getAttribute("data-id");
@@ -16,7 +11,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
       if (confirmDelete) {
         try {
-          const response = await fetch(`/api/productsManager/${productId}`, {
+          const response = await fetch(`/productsManager/${productId}`, {
             method: "DELETE",
             headers: {
               "Content-Type": "application/json",
