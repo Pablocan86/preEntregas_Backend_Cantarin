@@ -5,58 +5,77 @@ const ProductManager = require("../dao/productManager.js");
 const productManager = new ProductManager();
 
 router.get("/products", async (req, res) => {
-  let page = parseInt(req.query.page);
-  try {
-    if (!page) page = 1;
-    let result = await productModel.paginate(
-      {},
+  let { limit = 3, page = 1, sort, category } = req.query;
+  limit = parseInt(limit);
+  page = parseInt(page);
+  console.log(category);
 
-      { page, limit: 3, lean: true }
-    );
-    result.prevLink = result.hasPrevPage ? `?page=${result.prevPage}` : "";
-    result.nextLink = result.hasNextPage ? `?page=${result.nextPage}` : "";
-    result.isValid = !(page <= 0 || page > result.totalPages);
-    result.style = "products.css";
-    //Renderizado en el handlebars
-    res.render("products", result);
-    //Objeto de consinga
-    // res.send({
-    //   status: "success/error",
-    //   payload: result.docs,
-    //   totalPages: result.totalPages,
-    //   prevPage: result.prevPage,
-    //   nextPage: result.nextPage,
-    //   page: result.page,
-    //   hasPrevPage: result.hasPrevPage,
-    //   hasNextPage: result.hasNextPage,
-    //   prevLink: result.prevLink,
-    //   nextLink: result.nextLink,
-    // });
+  try {
+    // Construir filtro de búsqueda
+    let filter = {};
+    if (category) {
+      // Buscar por categoría o disponibilidad
+      filter = {
+        $or: [
+          { category: category.toUpperCase() },
+          { available: category.toLowerCase() === "true" }, // Comparar como booleano
+        ],
+      };
+    }
+
+    // Opciones de sorteo
+    let sortOptions = {};
+    if (sort) {
+      sortOptions.price = sort === "asc" ? 1 : -1;
+    }
+
+    // Obtener el total de productos que coinciden con el filtro
+    const totalProducts = await productModel.countDocuments(filter);
+
+    // Calcular la paginación
+    const totalPages = Math.ceil(totalProducts / limit);
+    const offset = (page - 1) * limit;
+
+    // Obtener productos paginados
+    const products = await productModel
+      .find(filter)
+      .lean()
+      .sort(sortOptions)
+      .skip(offset)
+      .limit(limit);
+
+    // Construir la respuesta
+    const response = {
+      status: "success",
+      payload: products,
+      totalPages,
+      prevPage: page > 1 ? page - 1 : null,
+      nextPage: page < totalPages ? page + 1 : null,
+      page,
+      hasPrevPage: page > 1,
+      hasNextPage: page < totalPages,
+      prevLink:
+        page > 1
+          ? `/products?limit=${limit}&page=${page - 1}&sort=${
+              sort || ""
+            }&category=${category || ""}`
+          : null,
+      nextLink:
+        page < totalPages
+          ? `/products?limit=${limit}&page=${page + 1}&sort=${
+              sort || ""
+            }&category=${category || ""}`
+          : null,
+    };
+    //Renderizamos la vista
+    res.render("products", { response, style: "products.css" });
+    // res.json(response);
   } catch (error) {
-    res.send({ status: "error" });
+    console.error("Error fetching products:", error);
+    res.status(500).json({ status: "error", message: "Internal server error" });
   }
 });
-router.get("/productsHome", async (req, res) => {
-  try {
-    let products = await productManager.getProducts();
-    let products2 = await productModel.paginate({}, { limit: 3, page: 1 });
-    let filter = await productModel.aggregate([
-      //Busca todos los que tienen ese precio
-      { $match: { price: 2500 } },
-      //Suma los precios
-      {
-        $group: { _id: "$price", totalQuantity: { $sum: "$price" } },
-      },
-    ]);
 
-    console.log(filter);
-    console.log(products2);
-    res.render("productsHome", { products, style: "products.css" });
-    // res.send({ result: "success", payload: products });
-  } catch (error) {
-    console.error("No se encuentran productos en la Base de datos", error);
-  }
-});
 router.get("/productsManager", async (req, res) => {
   try {
     let page = parseInt(req.query.page);
@@ -153,25 +172,25 @@ router.put("/:uid", async (req, res) => {
   }
 });
 
-router.delete("/productsManager/:uid", async (req, res) => {
-  let { uid } = req.params;
-  let products = await productModel.find();
-  try {
-    await productManager.deleteProduct(uid);
-    res.render("productsManager");
-  } catch (error) {
-    if (
-      error.message === "No se encuentra producto con es id en la base de datos"
-    ) {
-      res.status(400).json({
-        error: `No se encuentra producto con ID: ${uid} en la base de datos`,
-      });
-    } else {
-      res
-        .status(500)
-        .json({ error: "Ocurrió un error al procesar la solicitud" });
-    }
-  }
-});
+// router.delete("/productsManager/:uid", async (req, res) => {
+//   let { uid } = req.params;
+//   let products = await productModel.find();
+//   try {
+//     await productManager.deleteProduct(uid);
+//     res.render("productsManager");
+//   } catch (error) {
+//     if (
+//       error.message === "No se encuentra producto con es id en la base de datos"
+//     ) {
+//       res.status(400).json({
+//         error: `No se encuentra producto con ID: ${uid} en la base de datos`,
+//       });
+//     } else {
+//       res
+//         .status(500)
+//         .json({ error: "Ocurrió un error al procesar la solicitud" });
+//     }
+//   }
+// });
 
 module.exports = router;

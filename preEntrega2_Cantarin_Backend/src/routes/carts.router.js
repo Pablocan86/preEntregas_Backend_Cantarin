@@ -5,7 +5,8 @@ const productModel = require("../dao/models/product.model.js");
 const CartManager = require("../dao/cartManager.js");
 
 const cartManager = new CartManager();
-router.get("/api/carts", async (req, res) => {
+
+router.get("/carts", async (req, res) => {
   try {
     let carts = await cartModel.find();
     res.send({ result: "success", payload: carts });
@@ -14,27 +15,19 @@ router.get("/api/carts", async (req, res) => {
   }
 });
 
-router.post("/api/carts", async (req, res) => {
+router.post("/carts", async (req, res) => {
   await cartManager.addCart();
   let carts = await cartModel.find();
   res.send({ result: "success", payload: carts });
 });
 
-router.put("/api/carts/:uid", async (req, res) => {
-  let { uid } = req.params;
-  let cartToReplace = req.body;
-  let result = await cartModel.updateOne({ _id: uid }, cartToReplace);
-  res.send({ status: "success", payload: result });
-});
-
-// RUTA DE LA PRIMER PRE ENTREGA PARA ADAPATAR
-router.get("/api/carts/:cid", async (req, res) => {
+// Muestra solo el carrito pasando el ID en params
+router.get("/carts/:cid", async (req, res) => {
   try {
-    const idBuscado = req.params.cid;
-    s;
-    const cartForId = await cartModel.findById(idBuscado);
-    if (cartForId) {
-      res.send({ products: cartForId });
+    let { cid } = req.params;
+    let cart = await cartModel.findById(cid);
+    if (cart) {
+      res.send({ products: cart });
     } else {
       res.send({ message: "No existe 🛒" });
     }
@@ -45,37 +38,70 @@ router.get("/api/carts/:cid", async (req, res) => {
 });
 
 // RUTA DE LA PRIMER PRE ENTREGA PARA ADAPATAR
-router.post("/api/carts/:cid/product/:pid", async (req, res) => {
+router.post("/carts/:cid/products/:pid", async (req, res) => {
   try {
-    // const db = await managerC.readBD();
-    const products = await productModel.find();
-    // const cartId = parseInt(req.params.cid);
-    const cartId = req.params.cid;
-    // const productId = parseInt(req.params.pid);
-    const productId = req.params.pid;
-    const addedProduct = products.find((prod) => prod.id === productId);
-    if (addedProduct) {
-      const existCart = await cartModel.find({ _id: cartId });
+    let { cid, pid } = req.params;
+    await cartManager.addToCart(pid, cid);
+    const carts = await cartModel.find();
+    res.send({ carts });
+    // // const db = await managerC.readBD();
+    // const products = await productModel.find();
+    // // const cartId = parseInt(req.params.cid);
+    // const cartId = req.params.cid;
+    // // const productId = parseInt(req.params.pid);
+    // const productId = req.params.pid;
+    // const addedProduct = products.find((prod) => prod.id === productId);
+    // if (addedProduct) {
+    //   const existCart = await cartModel.find({ _id: cartId });
 
-      if (existCart) {
-        res.send(
-          `Producto ${addedProduct.title} agregado al carrito con id: ${existCart.id}`
-        );
-        // await managerC.addToCart(productId, cartId);
-      } else {
-        res.send(`No existe carrito con id ${cartId}`);
-        return;
-      }
-    } else {
-      res.send(`Producto con ID: ${productId} inexistente en la base de datos`);
-    }
+    //   if (existCart) {
+    //     res.send(
+    //       `Producto ${addedProduct.title} agregado al carrito con id: ${existCart.id}`
+    //     );
+    //     // await managerC.addToCart(productId, cartId);
+    //   } else {
+    //     res.send(`No existe carrito con id ${cartId}`);
+    //     return;
+    //   }
+    // } else {
+    //   res.send(`Producto con ID: ${productId} inexistente en la base de datos`);
+    // }
   } catch (error) {
     console.error("No se puede agregar el producto", error);
     res.status(500).send("Error de conexión");
   }
 });
 
-router.delete("/:uid", async (req, res) => {
+/*Ruta que agrega solo la cantidad pasada por body
+{
+  quantity:Number
+}
+*/
+
+router.put("/carts/:cid/products/:pid", async (req, res) => {
+  let quantity = req.body.quantity;
+
+  try {
+    let { cid, pid } = req.params;
+    const cart = await cartModel.findById((id = cid));
+    const vista = cart.products;
+    const existProduct = vista.find((p) => p.id === pid);
+    if (existProduct) {
+      existProduct.quantity = existProduct.quantity + quantity;
+      let result = await cartModel.updateOne({ _id: cid }, cart);
+
+      res.send({ Respuesta: "Producto agregado" });
+    } else {
+      res.send({ Respuesta: "No existe producto en la base de datos" });
+    }
+  } catch (error) {
+    res.status(504).send(error);
+  }
+});
+
+//Ruta que borra todo el carrito
+
+router.delete("/carts/:uid", async (req, res) => {
   let { uid } = req.params;
   try {
     await cartManager.deleteCart(uid);
@@ -100,4 +126,30 @@ router.delete("/:uid", async (req, res) => {
   }
 });
 
+//Ruta que solo borra el producto del carrito seleccionado
+router.delete("/carts/:cid/products/:pid", async (req, res) => {
+  try {
+    let { cid, pid } = req.params;
+    const cart = await cartModel.findById(cid);
+    const vista = cart.products;
+    const existProduct = vista.find((p) => p.id === pid);
+    if (existProduct) {
+      cart.products.remove(existProduct);
+      let result = await cartModel.deleteOne({ _id: pid }, cart);
+
+      res.send({ Respuesta: "Producto borrado" });
+    } else {
+      res.send({ Respuesta: "No existe producto en la base de datos" });
+    }
+  } catch (error) {
+    res.status(504).send(error);
+  }
+});
+
+router.get("/vista/:cid", async (req, res) => {
+  let { cid } = req.params;
+  console.log(cid);
+  let cart = await cartModel.find({ _id: cid }).populate("products.product");
+  console.log(JSON.stringify(cart, null, "\t"));
+});
 module.exports = router;

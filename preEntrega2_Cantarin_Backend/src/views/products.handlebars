@@ -1,33 +1,34 @@
 <div>
-    {{#if isValid}}
-    <section class="sectionProducts">
+  <section class="sectionProducts">
     <h2>PRODUCTOS</h2>
-<div class="productsContainer">
+    {{#if response.payload.length}}
+      <div class="productsContainer">
+        {{#each response.payload}}
+          <div class="cardProduct">
+            <p>{{this.title}}</p>
+            <img class="productImage" src="{{this.thumbnail}}" alt="" />
+            <p>$ {{this.price}}</p>
+            <button class="addButton" data-id="{{this._id}}">Agregar
+            </button>
+          </div>
+          {{!-- <li>{{this.name}} - ${{this.price}}</li> --}}
+        {{/each}}
+      </div>
+      <div>
+        {{#if response.hasPrevPage}}
+          <a href="{{response.prevLink}}">Anterior</a>
+        {{/if}}
+        &nbsp;
+        {{response.page}}
+        &nbsp;
+        {{#if response.hasNextPage}}
+          <a href="{{response.nextLink}}">Siguiente</a>
+        {{/if}}
+      </div>
+    {{else}}
+      <p>No products found.</p>
+    {{/if}}
+  </section>
+</div>
 
-    {{#each docs}}
-        <div class="cardProduct">
-          <p>{{this.title}}</p>
-          <img class="productImage" src="{{this.thumbnail}}" alt="" />
-          <p>$ {{this.price}}</p>
-          <button class="addButton" data-id="{{this._id}}">Agregar </button>
-        </div>
-      {{/each}}
-</div>
-<br />
-<div>
-    {{#if hasPrevPage}}
-    <a href={{this.prevLink}}>
-        << Anterior</a>
-            {{/if}}
-            &nbsp;
-            {{this.page}}
-            &nbsp;
-            {{#if hasNextPage}}
-            <a href={{this.nextLink}}>Siguiente >></a>
-            {{/if}}
-</div>
-{{else}}
-<h1>No hay productos</h1>
-{{/if}}
-<a href="./productsManager">Administrar productos</a>
-</div>
+<script src="/js/products.js"></script>

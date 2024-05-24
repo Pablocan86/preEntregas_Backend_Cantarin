@@ -39,8 +39,8 @@ const environment = async () => {
 
 environment();
 
-app.use("/api", productsRouter);
+app.use("/", productsRouter);
 app.use("/", cartsRouter);
-app.use("/api", messageRouter);
+app.use("/", messageRouter);
 
 app.listen(PORT, () => console.log(`Server listening on port ${PORT}`));
