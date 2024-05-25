@@ -162,7 +162,7 @@ PUT: localhost:8080/carts/(ID de carrito)/products/(_id de producto en carrito)
 GET: localhost:8080/carts/(id carrito)
 ```
 
-![imagen postman](./preEntrega2_Cantarin_Backend/src/imagesReadme/cart_populate.png)
+![imagen navegador](./preEntrega2_Cantarin_Backend/src/imagesReadme/cart_populate.png)
 
 #### VISTA PRODUCTS
 
