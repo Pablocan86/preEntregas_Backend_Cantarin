@@ -75,6 +75,7 @@ router.get("/", async (req, res) => {
   }
 });
 
+//Ruta que renderiza en el handlebar products
 router.get("/products", async (req, res) => {
   let { limit = 3, page = 1, sort, category } = req.query;
   limit = parseInt(limit);
@@ -149,6 +150,7 @@ router.get("/products", async (req, res) => {
     res.status(500).json({ status: "error", message: "Internal server error" });
   }
 });
+
 router.get("/productDetails/:pid", async (req, res) => {
   let { pid } = req.params;
   const product = await productModel.findById(pid).lean();
@@ -156,7 +158,7 @@ router.get("/productDetails/:pid", async (req, res) => {
   res.render("productDetail", {
     product,
     style: "productDetails.css",
-    title: "Detalle productos",
+    title: "Detalles producto",
   });
 });
 
@@ -172,6 +174,7 @@ router.get("/productsManager", async (req, res) => {
     result.nextLink = result.hasNextPage ? `?page=${result.nextPage}` : "";
     result.isValid = !(page <= 0 || page > result.totalPages);
     result.style = "products.css";
+    result.title = "Administrador de productos";
 
     res.render("productsManager", result);
     // res.send({ result: "success", payload: products });
