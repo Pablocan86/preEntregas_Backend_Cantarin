@@ -67,9 +67,8 @@ router.get("/", async (req, res) => {
             }&category=${category || ""}`
           : null,
     };
-    //Renderizamos la vista
+
     res.json({ response });
-    // res.json(response);
   } catch (error) {
     console.error("Error fetching products:", error);
     res.status(500).json({ status: "error", message: "Internal server error" });
@@ -139,12 +138,26 @@ router.get("/products", async (req, res) => {
           : null,
     };
     //Renderizamos la vista
-    res.render("products", { response, style: "products.css" });
+    res.render("products", {
+      response,
+      style: "products.css",
+      title: "Productos",
+    });
     // res.json(response);
   } catch (error) {
     console.error("Error fetching products:", error);
     res.status(500).json({ status: "error", message: "Internal server error" });
   }
+});
+router.get("/productDetails/:pid", async (req, res) => {
+  let { pid } = req.params;
+  const product = await productModel.findById(pid).lean();
+  // res.send(product)
+  res.render("productDetail", {
+    product,
+    style: "productDetails.css",
+    title: "Detalle productos",
+  });
 });
 
 router.get("/productsManager", async (req, res) => {
@@ -192,11 +205,7 @@ router.post("/productsManager", async (req, res) => {
     );
 
     res.render("productsManager", result);
-    // res
-    //   .status(201)
-    //   .json({ message: `Producto ${title} agregado correctamente` });
   } catch (error) {
-    let products = await productManager.getProducts();
     if (error.message === "No se han completado todos los campos") {
       result.error = "No se han completado todos los campos";
       res.render("productsManager", result);

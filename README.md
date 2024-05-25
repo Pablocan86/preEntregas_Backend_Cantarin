@@ -120,7 +120,7 @@ POST: localhost:8080/api/carts/:cid/product/:pid
 
 [Link del repositorio click aqui](https://github.com/Pablocan86/preEntregas_Backend_Cantarin/tree/main/preEntrega2_Cantarin_Backend)
 
-### RUTA RAIZ DEVOLUCIÓN OBJETO
+#### RUTA RAIZ DEVOLUCIÓN OBJETO
 
 ```
 GET: localhost:8080
@@ -128,7 +128,7 @@ GET: localhost:8080
 
 ![imagen postman](./preEntrega2_Cantarin_Backend/src/imagesReadme/ruta_raiz.png)
 
-### FILTRO LIMIT+PAGE+SORT+CATEGORY
+#### FILTRO LIMIT+PAGE+SORT+CATEGORY
 
 ```
 GET: localhost:8080/?limit=2&page=2&sort=asc&category=camisas
@@ -136,22 +136,56 @@ GET: localhost:8080/?limit=2&page=2&sort=asc&category=camisas
 
 ![imagen postman](./preEntrega2_Cantarin_Backend/src/imagesReadme/ruta_raiz_filtros.png)
 
-### METODO POST PARA CREAR CARRITO VACIO
+#### METODO POST PARA CREAR CARRITO VACIO
 
 ```
 POST: localhost:8080/carts
 ```
 
-### METODO DELETE PARA BORRAR PRODUCTO CARRITO
+#### METODO DELETE PARA BORRAR PRODUCTO CARRITO
 
 ```
 DELETE: localhost:8080/carts/(ID de carrito)/products/(_id de producto en carrito)
 ```
 
-### METODO PUT PARA SUMAR CANTIDAD DE PRODUCTO EXISTENTE
+#### METODO PUT PARA SUMAR CANTIDAD DE PRODUCTO EXISTENTE
 
 ```
 PUT: localhost:8080/carts/(ID de carrito)/products/(_id de producto en carrito)
 ```
 
 ![imagen postman](./preEntrega2_Cantarin_Backend/src/imagesReadme/put_suma_quantity.png)
+
+#### METODO GET DE CART ESPECÍFICO CON POPULATE
+
+```
+GET: localhost:8080/carts/(id carrito)
+```
+
+![imagen postman](./preEntrega2_Cantarin_Backend/src/imagesReadme/cart_populate.png)
+
+#### VISTA PRODUCTS
+
+```
+GET http://localhost:8080/products?limit=3&page=2&sort=&category=
+```
+
+![imagen navegador](./preEntrega2_Cantarin_Backend//src//imagesReadme/products_view.PNG)
+
+#### PRODUCTS DETAILS
+
+Al hacer click en "Ver más" de los productos, redirige los detalles, obteniend el ID del data-id
+
+```
+GET: localhost:8080/productDetails/664b9610fb3bfbc969e22832
+```
+
+![imagen navegador](./preEntrega2_Cantarin_Backend//src//imagesReadme/product_details.PNG)
+
+#### VISTA CARRITO
+
+```
+GET http://localhost:8080/carts/664fa5d1d2c40fa1c15d6a55
+```
+
+![imagen navegador](./preEntrega2_Cantarin_Backend/src/imagesReadme/cart_view.PNG)

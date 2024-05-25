@@ -7,7 +7,7 @@
 
     {{#each docs}}
         <div class="cardProduct">
-          <p>{{this.title}}</p>
+          <h3>{{this.title}}</h3>
           <img class="productImage" src="{{this.thumbnail}}" alt="" />
           <p>$ {{this.price}}</p>
           <button class="deleteButton" data-id="{{this._id}}">Eliminar </button>
@@ -54,7 +54,7 @@
       <input type="text" name="code" />
       <label for="status">Estado</label>
       <input type="text" name="status" id="" />
-      <label for="category">Category</label>
+      <label for="category">Category (Mayúscula)</label>
       <input type="text" name="category" id="" />
       <div class="buttonDiv">
         <button class="addButton" type="submit">Agregar</button>
@@ -81,8 +81,10 @@
         {{/if}}
       {{/if}}
     </form>
-    <a href="./messages">Chatea con nosotros</a>
-    <a href="./products">Home</a>
+    <div class="linksDiv">
+    <a class="linkOtherPage" href="./messages">Chatea con nosotros</a>
+    <a class="linkOtherPage" href="./products">Home</a>
+    </div>
   </section>
 </div>
 

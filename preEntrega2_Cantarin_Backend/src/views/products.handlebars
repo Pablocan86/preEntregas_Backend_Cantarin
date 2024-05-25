@@ -5,13 +5,17 @@
       <div class="productsContainer">
         {{#each response.payload}}
           <div class="cardProduct">
-            <p>{{this.title}}</p>
+            <h3>{{this.title}}</h3>
             <img class="productImage" src="{{this.thumbnail}}" alt="" />
             <p>$ {{this.price}}</p>
-            <button class="addButton" data-id="{{this._id}}">Agregar
-            </button>
+            <div class="detailsProduct"><button
+                class="addButton"
+                data-id="{{this._id}}"
+              >Agregar
+              </button>
+              <a class="viewDetails" href="/productDetails/{{this._id}}">Ver
+                más...</a></div>
           </div>
-          {{!-- <li>{{this.name}} - ${{this.price}}</li> --}}
         {{/each}}
       </div>
       <div>
@@ -28,8 +32,9 @@
     {{else}}
       <p>No products found.</p>
     {{/if}}
+    <a class="linkOtherPAge" href="./productsManager">Adminstración productos</a>
   </section>
-  <a href="./productsManager">Adminstración productos</a>
+
 </div>
 
 <script src="/js/products.js"></script>

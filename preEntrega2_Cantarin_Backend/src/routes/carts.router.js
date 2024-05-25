@@ -6,6 +6,7 @@ const CartManager = require("../dao/cartManager.js");
 
 const cartManager = new CartManager();
 
+//Muesra todos los carritos
 router.get("/carts", async (req, res) => {
   try {
     let carts = await cartModel.find();
@@ -14,6 +15,7 @@ router.get("/carts", async (req, res) => {
     console.error("No se encuentas carritos en la Base de datos", error);
   }
 });
+
 //Crea un carrito
 router.post("/carts", async (req, res) => {
   await cartManager.addCart();
@@ -21,23 +23,38 @@ router.post("/carts", async (req, res) => {
   res.send({ result: "success", payload: carts });
 });
 
-// Muestra solo el carrito pasando el ID en params
+//Muestra carrito con productos detallados
+//(lo comento para que no tenga problemas con el otro router del handlebar)
+// router.get("/carts/:cid", async (req, res) => {
+//   try {
+//     let { cid } = req.params;
+//     let cart = await cartModel.findById(cid).populate("products.product");
+//     if (cart) {
+//       res.send({ products: cart });
+//     } else {
+//       res.send({ message: "No existe 🛒" });
+//     }
+//   } catch (error) {
+//     console.error("No existe carrito");
+//     res.json({ message: "No existe carrito" });
+//   }
+// });
+
 router.get("/carts/:cid", async (req, res) => {
+  let { cid } = req.params;
   try {
-    let { cid } = req.params;
-    let cart = await cartModel.findById(cid);
-    if (cart) {
-      res.send({ products: cart });
-    } else {
-      res.send({ message: "No existe 🛒" });
-    }
+    let cart = await cartModel
+      .findById(cid)
+      .populate("products.product")
+      .lean();
+    res.render("cart", { cart, style: "cart.css", title: "Carrito" });
   } catch (error) {
-    console.error("No existe carrito");
-    res.json({ message: "No existe carrito" });
+    res.status(500).send("Error al obtener el carrito");
   }
 });
 
-// RUTA DE LA PRIMER PRE ENTREGA PARA ADAPATAR
+//No se pide en las cosignas, de todos modos tratar de adaptar
+
 router.post("/carts/:cid/products/:pid", async (req, res) => {
   try {
     let { cid, pid } = req.params;
@@ -132,10 +149,4 @@ router.delete("/carts/:cid/products/:pid", async (req, res) => {
   }
 });
 
-router.get("/vista/:cid", async (req, res) => {
-  let { cid } = req.params;
-  console.log(cid);
-  let cart = await cartModel.find({ _id: cid }).populate("products.product");
-  console.log(JSON.stringify(cart, null, "\t"));
-});
 module.exports = router;
