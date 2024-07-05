@@ -5,6 +5,7 @@
 }
 
 body {
+  background-image: url("https://img.freepik.com/vector-gratis/fondo-tecnologia-digital-alambre-malla-red_1017-27428.jpg");
   display: flex;
   flex-direction: column;
   justify-content: center;
@@ -13,6 +14,14 @@ body {
   width: 100%;
   font-family: "Lucida Sans", "Lucida Sans Regular", "Lucida Grande",
     "Lucida Sans Unicode", Geneva, Verdana, sans-serif;
+}
+main {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-evenly;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 10px;
 }
 
 .loginForm {
@@ -25,11 +34,23 @@ body {
   display: flex;
   flex-direction: column;
   justify-content: space-evenly;
-  height: 300px;
+  align-items: center;
+  height: 100%;
   width: 350px;
 }
 
+.loginForm h2 {
+  margin: 0px auto;
+}
+.avisoError {
+  color: red;
+  width: 100%;
+  text-align: center;
+  padding-top: 5px;
+  padding-bottom: 5px;
+}
 .submitButton {
+  width: 100%;
   background-color: blue;
   padding: 5px;
   font-size: 1rem;
@@ -38,10 +59,12 @@ body {
   color: white;
   margin: 5px;
   cursor: pointer;
+  transition: all 500ms;
 }
 
 input {
   border-radius: 5px;
+  width: 100%;
   padding: 5px;
   outline: none;
   border: 1px solid gray;
@@ -53,15 +76,59 @@ input {
   border: 1px solid blue;
 }
 
-a {
+.registro {
+  width: 100%;
+  height: 2rem;
   text-align: center;
   text-decoration: none;
   border: 1px solid blue;
   border-radius: 5px;
+  padding-top: 5px;
   color: blue;
+  transition: all 500ms;
 }
-a:hover {
+.registro:hover {
   background-color: black;
   color: white;
   border: 1px solid black;
+}
+
+.gitHubDiv {
+  width: 100%;
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+  cursor: pointer;
+  gap: 10px;
+  padding-bottom: 5px;
+}
+
+.loginTerceros {
+  padding-left: 5px;
+  padding-right: 5px;
+  text-decoration: none;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 30px;
+}
+
+.imgLogin {
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  background-color: white;
+  padding: 5px;
+  transition: all 1000ms;
+}
+.imgLogin:hover {
+  box-shadow: 0px 0px 10px black;
+}
+
+.imgEcommerce {
+  object-fit: fill;
+  width: 50%;
+
+  border-radius: 10px;
 }

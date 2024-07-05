@@ -1,7 +1,7 @@
 const express = require("express");
 const router = express.Router();
 const messageModel = require("../dao/models/message.model.js");
-const MessageManager = require("../dao/messageManager.js");
+const MessageManager = require("../dao/classes/messageManager.js");
 
 const messageM = new MessageManager();
 router.get("/messages", async (req, res) => {

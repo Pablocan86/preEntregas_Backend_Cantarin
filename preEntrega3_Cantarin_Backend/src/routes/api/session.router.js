@@ -1,15 +1,25 @@
 const express = require("express");
 const userModel = require("../../dao/models/users.model.js");
+const jwt = require("jsonwebtoken");
 const passport = require("passport");
-
+const sessionConstroller = require("../../controllers/sessionController.js");
+const {
+  generateToken,
+  authToken,
+  passportCall,
+  authorization,
+} = require("../../utils.js");
 const router = express.Router();
+
+const PRIVATE_KEY = "CoderKeyQueFuncionaComoUnSecret";
+const users = [];
 
 router.post(
   "/register",
-  passport.authenticate("register", { failureRedirect: "failregister" }),
-  async (req, res) => {
-    res.redirect("/userregistrade");
-  }
+  passport.authenticate("register", {
+    failureRedirect: "failregister",
+  }),
+  sessionConstroller.register
 );
 
 router.get("/failregister", async (req, res) => {
@@ -20,56 +30,48 @@ router.get("/failregister", async (req, res) => {
 router.post(
   "/login",
   passport.authenticate("login", { failureRedirect: "faillogin" }),
-  async (req, res) => {
-    const { email, password } = req.body;
-    if (!email || !password)
-      return res
-        .status(400)
-        .send({ status: "error", error: "Incomplete values" });
-    try {
-      const user = await userModel.findOne(
-        { email },
-        { email: 1, first_name: 1, last_name: 1, password: 1, age: 1, rol: 1 }
-      );
-      // if (!user)
-      //   return res
-      //     .status(400)
-      //     .send({ status: "error", error: "User not found" });
-      // if (!isValidPassword(user, password))
-      //   return res
-      //     .status(403)
-      //     .send({ status: "error", error: "Incorrect password" });
-      // delete user.password;
-      req.session.user = user;
-      if (!user) return res.redirect("/register");
-      req.session.user = {
-        id: user._id,
-        first_name: user.first_name,
-        last_name: user.last_name,
-        email: user.email,
-        age: user.age,
-        rol: user.rol,
-      };
-
-      if (req.session.user.rol === "admin") {
-        res.redirect("/productsManager");
-      } else {
-        res.redirect("/products");
-      }
-    } catch (err) {
-      res.status(500).send("Error al iniciar sesión");
-    }
-  }
+  sessionConstroller.login
 );
 
-router.get("faillogin", (req, res) => {
-  res.send({ error: "Login fallido" });
+router.get("/current", async (req, res) => {
+  try {
+    if (req.session.user) {
+      res.render("profile", { user: req.session.user, style: "profile.css" });
+    } else {
+      res.send({ message: "No hay usuario inciado" });
+    }
+  } catch (error) {
+    console.error("No se ha iniciado sesión", error);
+  }
 });
-router.post("/logout", (req, res) => {
-  req.session.destroy((err) => {
-    if (err) return res.status(500).send("Error al cerrar sesión");
-    res.redirect("/login");
+
+router.get("/faillogin", (req, res) => {
+  res.render("login", {
+    style: "login.css",
+    title: "Bienvenido",
+    Error: "Usuario y/o contraseña incorrectos",
   });
 });
 
+router.post("/logout", sessionConstroller.logout);
+
+router.get("/auth/google", passport.authenticate("google", { scope: "email" }));
+
+router.get(
+  "/auth/google/callback",
+  passport.authenticate("google", { failureRedirect: "login" }),
+  sessionConstroller.googleCallback
+);
+
+router.get(
+  "/github",
+  passport.authenticate("github", { scope: "user.email" }),
+  async (req, res) => {}
+);
+
+router.get(
+  "/githubcallback",
+  passport.authenticate("github", { failureRedirect: "login" }),
+  sessionConstroller.githubCallback
+);
 module.exports = router;

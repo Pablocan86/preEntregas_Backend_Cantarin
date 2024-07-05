@@ -5,6 +5,9 @@
 }
 
 body {
+  background-image: url("https://img.freepik.com/vector-gratis/fondo-tecnologia-digital-alambre-malla-red_1017-27428.jpg");
+  background-position: center;
+  background-size: cover;
   display: flex;
   flex-direction: column;
   justify-content: center;
