@@ -8,6 +8,11 @@ class ProductManager {
     return products;
   }
 
+  async getProductById(pid) {
+    const product = await productModel.findById(pid).lean();
+    return product;
+  }
+
   async addProduct(
     title,
     description,

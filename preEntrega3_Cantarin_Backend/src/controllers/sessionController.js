@@ -42,7 +42,8 @@ exports.googleCallback = async (req, res) => {
   req.session.user = req.user;
   if (req.session.user.rol === "admin") {
     res.redirect("/productsManager");
-  } else {
+  }
+  if (req.session.user.rol === "user") {
     res.redirect("/products");
   }
 };

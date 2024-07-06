@@ -184,6 +184,13 @@ exports.addProductToBD = async (req, res) => {
   }
 };
 
+exports.getUpdateProduct = async (req, res) => {
+  try {
+    const { pid } = req.params;
+    let result = await productService.getProductById(pid);
+    res.render("updateProduct", { result: result, style: "products.css" });
+  } catch (error) {}
+};
 exports.updateProductToDB = async (req, res) => {
   let { uid } = req.params;
   let { title, description, price, thumbnail, code, status, category, stock } =

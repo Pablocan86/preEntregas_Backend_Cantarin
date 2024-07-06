@@ -46,7 +46,7 @@ app.engine("handlebars", handlebars.engine());
 app.set("views", __dirname + "/views");
 app.set("view engine", "handlebars");
 
-const environment = async () => {
+const connectMongoDB = async () => {
   await mongoose.connect(process.env.MONGO_URL);
   try {
     console.log("Conectado a la base de datos");
@@ -55,7 +55,7 @@ const environment = async () => {
   }
 };
 
-environment();
+connectMongoDB();
 
 app.use("/api/sessions", sessionRouter);
 app.use("/", viewsRouter);

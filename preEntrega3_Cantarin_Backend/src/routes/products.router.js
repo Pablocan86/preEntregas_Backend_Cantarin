@@ -95,6 +95,8 @@ router.post("/productsManager", productsController.addProductToBD);
 
 router.put("/:uid", productsController.updateProductToDB);
 
+router.get("/updateproducts/:pid", productsController.getUpdateProduct);
+
 router.delete("/productsManager/:uid", productsController.deleteProductToDB);
 
 module.exports = router;

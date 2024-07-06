@@ -118,7 +118,8 @@ h2 {
   width: 100%;
   margin-top: 10px;
 }
-.productsManagerForm {
+.productsManagerForm,
+.updateProductForm {
   width: 90%;
   margin: 20px;
   display: flex;
@@ -136,7 +137,8 @@ h2 {
   padding-left: 25%;
   padding-right: 25%;
 }
-.addButton {
+.addButton,
+.updateButton {
   background-color: blue;
   padding: 5px;
   font-size: 1rem;
@@ -147,7 +149,8 @@ h2 {
   cursor: pointer;
 }
 
-.addButton:hover {
+.addButton:hover,
+.updateButton:hover {
   background-color: white;
   color: blue;
   border: 1px solid blue;
