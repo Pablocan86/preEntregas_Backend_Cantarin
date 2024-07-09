@@ -3,8 +3,11 @@
   padding: 0;
   box-sizing: border-box;
 }
-
+form {
+  width: auto;
+}
 body {
+  width: 100%;
   font-family: "Lucida Sans", "Lucida Sans Regular", "Lucida Grande",
     "Lucida Sans Unicode", Geneva, Verdana, sans-serif;
   width: 100%;
@@ -53,7 +56,6 @@ a {
   border: 1px solid blue;
   border-radius: 5px;
   color: white;
-  margin: auto;
   cursor: pointer;
 }
 
@@ -120,4 +122,26 @@ a:hover {
   display: flex;
   justify-content: center;
   align-items: center;
+}
+
+.bottomButton {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+}
+
+.chat {
+  position: fixed;
+  box-shadow: 0px 0px 10px gray;
+  top: 90%;
+  right: 1%;
+  background-color: blue;
+  font-size: 1rem;
+  color: white;
+  padding: 5px;
+  border: 1px solid white;
+  border-radius: 5px;
+  margin: 5px;
+  cursor: pointer;
 }

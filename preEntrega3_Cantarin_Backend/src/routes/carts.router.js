@@ -10,6 +10,8 @@ const cartManager = new CartManager();
 //Muesra todos los carritos
 router.get("/carts", cartController.getcarts);
 
+router.get("/carts/:cid/purchase", cartController.checkout);
+
 //Crea un carrito
 router.post("/createcart", cartController.addCart);
 
@@ -35,33 +37,7 @@ router.get("/carts/:cid", cartController.getCartById);
 router.post("/carts/:cid/products/:pid", cartController.addToCart);
 
 /*Ruta que agrega solo la cantidades de 1 en 1 */
-router.put("/carts/:cid/products/:pid", async (req, res) => {
-  try {
-    let { cid, pid } = req.params;
-    const cart = await cartModel.findById(cid);
-    if (!cart) {
-      return res.status(404).send({ Respusta: "Carrito no encontrado" });
-    }
-
-    let existProduct = cart.products.find((p) => p.product.toString() === pid);
-
-    if (!existProduct) {
-      return res
-        .status(404)
-        .send({ Respuesta: "Producto no encontrado en el carrito" });
-    } else {
-      existProduct.quantity++;
-      let result = await cartModel.updateOne(
-        { _id: cid },
-        { products: cart.products }
-      );
-
-      res.redirect(`/carts/${cid}`);
-    }
-  } catch (error) {
-    res.status(504).send(error);
-  }
-});
+router.put("/carts/:cid/products/:pid", cartController.addToCart);
 
 //Prueba para acceder a los productos
 // router.get("/carrito/:cid/product/:pid", async (req, res) => {

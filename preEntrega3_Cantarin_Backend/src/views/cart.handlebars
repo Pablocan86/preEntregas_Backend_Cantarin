@@ -9,6 +9,7 @@
       <div class="productsQuantity">
         <button class="sumar addButton" data-id="{{this.product._id}}">+</button>
          <p class="quantity">Cantidad: {{this.quantity}}</p>
+         <p>Total: {{this.totalPrice}}</p>
         <button class="deleteButton" data-id="{{this.product._id}}">-</button>
        </div>
        
@@ -16,6 +17,8 @@
        </div>
        
     {{/each}}
+    <p>Total: ${{{totalPrice}}}.-</p>
+    <a href="/carts/{{cart._id}}/purchase"></a>
   {{else}}
     <div class="carritoVacio">
       <p>¿Aún no has añadido productos al carrito!</p>
@@ -26,8 +29,12 @@
 
     </div>
   {{/if}}
-</div>
+  <div class="bottomButton ">
+ <form action="/messages" method="GET">
+  <button class="chat">Chateá con nosotros</button></form>
   <a href="/products">Home</a>
+</div>
+</div>
 
 
 <script src="/js/cart.js"></script>

@@ -34,6 +34,7 @@ class CartManager {
       //Variable que toma el producto utilizando el método addProduct()
       const cart = await cartModel.findOne({ _id: idC });
       const product = await productModel.findOne({ _id: idP });
+
       if (!cart) {
         return res.status(404).send({ Respusta: "Carrito no encontrado" });
       }
@@ -44,14 +45,32 @@ class CartManager {
         );
         if (existProduct) {
           existProduct.quantity++;
+          existProduct.totalPrice = existProduct.quantity * product.price;
+          let order = cart.products.map((p) => p);
+          let total = order.reduce(
+            (acumulador, producto) => acumulador + producto.totalPrice,
+            0
+          );
+          cart.total = total;
           let result = await cartModel.updateOne(
             { _id: idC },
-            { products: cart.products }
+            { products: cart }
           );
         } else {
-          cart.products.push({ product: product, quantity: 1 });
+          cart.products.push({
+            product: product,
+            quantity: 1,
+            totalPrice: product.price,
+          });
           let result = await cartModel.updateOne({ _id: idC }, cart);
         }
+        let order = cart.products.map((p) => p);
+        let total = order.reduce(
+          (acumulador, producto) => acumulador + producto.totalPrice,
+          0
+        );
+        cart.total = total;
+        let result = await cartModel.updateOne({ _id: idC }, cart);
       } else {
         console.log("No existe producto");
       }
