@@ -1,24 +1,37 @@
 const express = require("express");
 const router = express.Router();
+const userDTO = require("../dao/DTOs/user.dto.js");
 const messageModel = require("../dao/models/message.model.js");
 const MessageManager = require("../dao/classes/messageManager.js");
+const {
+  isAuthenticated,
+  isNotAuthenticated,
+  isAdmin,
+  isUser,
+} = require("../middleware/auth.js");
 
 const messageM = new MessageManager();
 router.get("/messages", async (req, res) => {
   try {
+    let user = new userDTO(req.session.user);
     const listMessages = await messageModel.find().lean();
 
-    res.render("chat", { listMessages, style: "message.css" });
+    res.render("chat", { listMessages, user, style: "message.css" });
   } catch (error) {
     console.error("No se encuentas mensajes en la Base de datos", error);
   }
 });
 
-router.post("/messages", async (req, res) => {
-  let { usuario, mensaje } = req.body;
-  await messageM.addMessage(usuario, mensaje);
-  const listMessages = await messageModel.find().lean();
-  res.render("chat", { listMessages, style: "message.css" });
+router.post("/messages", isUser, async (req, res) => {
+  try {
+    let { mensaje } = req.body;
+    let user = new userDTO(req.session.user);
+    await messageM.addMessage(user.first_name, mensaje);
+    const listMessages = await messageModel.find().lean();
+    res.render("chat", { listMessages, style: "message.css" });
+  } catch (error) {
+    res.send({ message: "usted no es usuario" });
+  }
 });
 
 router.put("/", (req, res) => {

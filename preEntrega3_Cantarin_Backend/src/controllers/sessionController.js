@@ -1,4 +1,5 @@
 const passport = require("passport");
+const userDTO = require("../dao/DTOs/user.dto");
 
 exports.register = async (req, res) => {
   res.redirect("/userregistrade");
@@ -28,6 +29,19 @@ exports.login = async (req, res) => {
     }
   } catch (err) {
     res.status(500).send("Error al iniciar sesión");
+  }
+};
+
+exports.current = async (req, res) => {
+  try {
+    if (req.session.user) {
+      let user = new userDTO(req.session.user);
+      res.render("profile", { user: user, style: "profile.css" });
+    } else {
+      res.send({ message: "No hay usuario inciado" });
+    }
+  } catch (error) {
+    console.error("No se ha iniciado sesión", error);
   }
 };
 

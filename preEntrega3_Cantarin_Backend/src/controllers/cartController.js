@@ -31,10 +31,18 @@ exports.getCartById = async (req, res) => {
 
 exports.addToCart = async (req, res) => {
   let { cid, pid } = req.params;
+  let user = req.session.user;
   try {
-    await cartService.addToCart(pid, cid);
-
-    res.redirect("/products");
+    if (user.rol === "admin") {
+      res.send({
+        message:
+          "Usted es administrador, no puede agregar productos al carrito",
+      });
+    }
+    if (user.rol === "user") {
+      await cartService.addToCart(pid, cid);
+      res.redirect("/products");
+    }
   } catch (error) {
     console.error("No se puede agregar el producto", error);
     res.status(500).send("Error de conexión");
@@ -56,13 +64,22 @@ exports.deleteProduct = async (req, res) => {
         .status(404)
         .send({ Respuesta: "Producto no encontrado en el carrito" });
     } else {
-      existProduct.quantity--;
-      let result = await cartModel.updateOne(
-        { _id: cid },
-        { products: cart.products }
-      );
+      if (existProduct.quantity >= 1) {
+        existProduct.quantity--;
+        let result = await cartModel.updateOne(
+          { _id: cid },
+          { products: cart.products }
+        );
+        if (existProduct.quantity === 0) {
+          cart.products = cart.products.filter(
+            (p) => p.product.toString() !== pid
+          );
+        }
 
-      res.redirect(`/carts/${cid}`);
+        await cart.save();
+
+        res.redirect(`/carts/${cid}`);
+      }
     }
   } catch (error) {
     res.status(504).send(error);

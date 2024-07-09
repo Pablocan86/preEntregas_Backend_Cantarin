@@ -10,7 +10,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
       if (confirmDelete) {
         try {
-          const response = await fetch(`/api/messages/${messageId}`, {
+          const response = await fetch(`/messages/${messageId}`, {
             method: "DELETE",
             headers: {
               "Content-Type": "application/json",

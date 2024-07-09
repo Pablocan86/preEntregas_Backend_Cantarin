@@ -8,6 +8,7 @@ const productManager = new ProductManager();
 const {
   isAuthenticated,
   isNotAuthenticated,
+  isAdmin,
 } = require("../middleware/auth.js");
 //Ruta raíz que devuelve el objeto de la primer consigna
 // router.get("/", async (req, res) => {
@@ -88,6 +89,7 @@ router.get("/productDetails/:pid", productsController.productDetails);
 router.get(
   "/productsManager",
   isAuthenticated,
+  isAdmin,
   productsController.productsAdmin
 );
 

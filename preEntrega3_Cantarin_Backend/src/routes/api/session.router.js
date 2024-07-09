@@ -2,7 +2,7 @@ const express = require("express");
 const userModel = require("../../dao/models/users.model.js");
 const jwt = require("jsonwebtoken");
 const passport = require("passport");
-const sessionConstroller = require("../../controllers/sessionController.js");
+const sessionController = require("../../controllers/sessionController.js");
 const {
   generateToken,
   authToken,
@@ -19,7 +19,7 @@ router.post(
   passport.authenticate("register", {
     failureRedirect: "failregister",
   }),
-  sessionConstroller.register
+  sessionController.register
 );
 
 router.get("/failregister", async (req, res) => {
@@ -30,20 +30,10 @@ router.get("/failregister", async (req, res) => {
 router.post(
   "/login",
   passport.authenticate("login", { failureRedirect: "faillogin" }),
-  sessionConstroller.login
+  sessionController.login
 );
 
-router.get("/current", async (req, res) => {
-  try {
-    if (req.session.user) {
-      res.render("profile", { user: req.session.user, style: "profile.css" });
-    } else {
-      res.send({ message: "No hay usuario inciado" });
-    }
-  } catch (error) {
-    console.error("No se ha iniciado sesión", error);
-  }
-});
+router.get("/current", sessionController.current);
 
 router.get("/faillogin", (req, res) => {
   res.render("login", {
@@ -53,14 +43,14 @@ router.get("/faillogin", (req, res) => {
   });
 });
 
-router.post("/logout", sessionConstroller.logout);
+router.post("/logout", sessionController.logout);
 
 router.get("/auth/google", passport.authenticate("google", { scope: "email" }));
 
 router.get(
   "/auth/google/callback",
   passport.authenticate("google", { failureRedirect: "login" }),
-  sessionConstroller.googleCallback
+  sessionController.googleCallback
 );
 
 router.get(
@@ -72,6 +62,6 @@ router.get(
 router.get(
   "/githubcallback",
   passport.authenticate("github", { failureRedirect: "login" }),
-  sessionConstroller.githubCallback
+  sessionController.githubCallback
 );
 module.exports = router;

@@ -2,10 +2,10 @@ document.addEventListener("DOMContentLoaded", () => {
   const deleteButtons = document.querySelectorAll(".deleteButton");
   const updateButton = document.querySelector(".updateButton");
 
-  updateButton.addEventListener("click", (e) => {
-    e.preventDefault();
-    console.log("Hola");
-  });
+  // updateButton.addEventListener("click", (e) => {
+  //   e.preventDefault();
+  //   console.log("Hola");
+  // });
 
   deleteButtons.forEach((button) => {
     button.addEventListener("click", async () => {

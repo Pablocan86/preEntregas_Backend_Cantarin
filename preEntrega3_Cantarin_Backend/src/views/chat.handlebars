@@ -1,9 +1,8 @@
 <div class="divPrincipal">
   <h2>CHAT CLIENTES</h2>
 
-  <form action="/api/messages" method="post">
-    <label for="usuario">Correo</label>
-    <input type="text" id="usuario" name="usuario" />
+  <form action="/messages" method="post">
+    <label for="">{{user.first_name}}</label>
     <label for="mensaje">Escriba su mensaje: </label>
     <input type="text" name="mensaje" id="mensaje" />
     <button type="submit" id="btnEnviar">Enviar</button>

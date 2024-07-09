@@ -71,6 +71,8 @@
       {{/if}}
     
     {{#if user}}
+  <form action="/messages" method="GET">
+  <button class="addButton">Chateá con nosotros</button></form>
       <form action="/api/sessions/logout" method="POST">
         <button class="closeSession" type="submit">Cerrar Sesión</button>
       </form>
