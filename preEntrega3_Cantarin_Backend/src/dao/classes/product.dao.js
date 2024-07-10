@@ -1,3 +1,4 @@
+const { setRandomFallback } = require("bcryptjs");
 const productModel = require("../models/product.model.js");
 
 class ProductManager {
@@ -73,7 +74,7 @@ class ProductManager {
     stock
   ) {
     const products = await productModel.find();
-    const productoEncontrado = products.find((prod) => prod.id === id);
+    const productoEncontrado = products.find((prod) => (prod.id = id));
     if (!productoEncontrado) {
       throw Error("Producto no existe en la base de datos");
     }
@@ -91,7 +92,12 @@ class ProductManager {
 
     await productModel.updateOne({ _id: id }, productoActualizado);
   }
-
+  async updateQuantity(id, stock) {
+    const actualizaciones = {
+      stock: stock,
+    };
+    await productModel.findByIdAndUpdate(id, actualizaciones);
+  }
   async deleteProduct(id) {
     const products = await productModel.find();
     const exist = products.find((prod) => prod.id === id);

@@ -3,9 +3,12 @@ const cartModel = require("../dao/models/cart.model.js");
 const productManager = require("../dao/classes/product.dao.js");
 const productModel = require("../dao/models/product.model.js");
 const crypto = require("crypto");
-const ticketModel = require("../dao/models/ticket.model.js");
+const ticketManager = require("../dao/classes/ticket.dao.js");
+
 const cartService = new cartManager();
 const productService = new productManager();
+const ticketService = new ticketManager();
+
 exports.getcarts = async (req, res) => {
   try {
     let carts = await cartService.getCarts();
@@ -101,22 +104,45 @@ exports.deleteProduct = async (req, res) => {
 exports.checkout = async (req, res) => {
   try {
     let { cid } = req.params;
-    console.log(req.session.user);
     let finalyCart = await cartService.getCartById(cid);
-    let cartPopulate = await cartService.getCartByIdPopulate(cid);
+    let cart = await cartService.getCartByIdPopulate(cid);
+
     let codeCrypto = crypto.randomBytes(10).toString("hex");
     let code = `${req.session.user.last_name}__${codeCrypto}`;
     //USAR UN SERVICE
     let ticket = {
       code: code,
-      purchase_dateTime: new Date(),
+      purchase_datetime: new Date(),
       amount: finalyCart.total,
       purchaser: req.session.user.email,
     };
-    // await ticketModel.create(ticket)
 
-    res.render("checkout", ticket);
+    // let result = await ticketService.createTicket(ticket);
+    // console.log(result);
+    res.render("checkout", { ticket: ticket, cart: cart });
   } catch (error) {
-    res.sendStatus(504).send(error);
+    res.status(504).send(error);
   }
+};
+
+exports.buy = async (req, res) => {
+  let { cid } = req.params;
+  let cart = await cartService.getCartByIdPopulate(cid);
+  for (const product of cart.products) {
+    if (product.product.stock >= product.quantity) {
+      const productId = product._id;
+      let newStock = product.product.stock - product.quantity;
+      cart.total = cart.total - product.totalPrice;
+      await productService.updateQuantity(product.product._id, newStock);
+      await cartService.updateTotal(cid, cart.total);
+      console.log(
+        `Producto ${product.product.title} actualizado en base de datos`
+      );
+      await cartService.updateCart(cid, productId);
+    } else {
+      console.log(`Producto ${product.product.title} sin stock`);
+    }
+  }
+  let cartActualizaded = await cartService.getCartByIdPopulate(cid);
+  res.send(cartActualizaded);
 };

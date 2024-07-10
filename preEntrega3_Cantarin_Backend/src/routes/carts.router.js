@@ -12,6 +12,8 @@ router.get("/carts", cartController.getcarts);
 
 router.get("/carts/:cid/purchase", cartController.checkout);
 
+router.post("/carts/:cid/purchase", cartController.buy);
+
 //Crea un carrito
 router.post("/createcart", cartController.addCart);
 

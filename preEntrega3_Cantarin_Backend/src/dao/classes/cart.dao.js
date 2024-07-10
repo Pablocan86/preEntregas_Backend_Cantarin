@@ -93,6 +93,21 @@ class CartManager {
     }
   }
 
+  async updateTotal(id, total) {
+    const actualizaciones = {
+      total: total,
+    };
+    await cartModel.findByIdAndUpdate(id, actualizaciones);
+  }
+  async updateCart(id, pid) {
+    try {
+      let result = await cartModel.updateOne(
+        { _id: id },
+        { $pull: { products: { _id: pid } } }
+      );
+      consol.log(result);
+    } catch (error) {}
+  }
   async deleteCart(id) {
     let cart = await cartModel.findById(id);
 
