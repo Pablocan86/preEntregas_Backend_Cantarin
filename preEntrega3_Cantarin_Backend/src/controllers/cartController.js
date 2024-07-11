@@ -4,6 +4,19 @@ const productManager = require("../dao/classes/product.dao.js");
 const productModel = require("../dao/models/product.model.js");
 const crypto = require("crypto");
 const ticketManager = require("../dao/classes/ticket.dao.js");
+const nodemailer = require("nodemailer");
+const dotenv = require("dotenv");
+
+dotenv.config();
+
+const transport = nodemailer.createTransport({
+  service: "gmail",
+  port: 587,
+  auth: {
+    user: process.env.usermail,
+    pass: process.env.pass,
+  },
+});
 
 const cartService = new cartManager();
 const productService = new productManager();
@@ -123,6 +136,8 @@ exports.checkout = async (req, res) => {
       ProductosConStock: productStock,
       ProductosSinStock: productNoStock,
       total: total,
+      title: "Solo un paso más",
+      style: "cart.css",
     });
   } catch (error) {
     res.status(504).send(error);
@@ -142,23 +157,18 @@ exports.buy = async (req, res) => {
       let newStock = product.product.stock - product.quantity;
       total = total + product.totalPrice;
       cart.total = cart.total - product.totalPrice;
-      // await productService.updateQuantity(product.product._id, newStock);
-      // await cartService.updateTotal(cid, cart.total);
+      await productService.updateQuantity(product.product._id, newStock);
+      await cartService.updateTotal(cid, cart.total);
       console.log(
         `Producto ${product.product.title} actualizado en base de datos`
       );
-      // await cartService.updateCart(cid, productId);
+      await cartService.updateCart(cid, productId);
     } else {
       productNoStock.push({ title: product.product.title });
       console.log(`Producto ${product.product.title} sin stock`);
     }
-
-    // }
-    // let cartActualizaded = await cartService.getCartByIdPopulate(cid);
-    // res.send(cartActualizaded);
   }
-  // // PARA CREAR TICKET
-  // let finalyCart = await cartService.getCartById(cid);
+  //CREAR TICKET
 
   let codeCrypto = `${req.session.user.last_name}_${crypto
     .randomBytes(10)
@@ -170,10 +180,22 @@ exports.buy = async (req, res) => {
     amount: total,
     purchaser: req.session.user.email,
   };
+  let mail = await transport.sendMail({
+    from: "pablo.cantarin86@gmail.com",
+    to: req.session.user.email,
+    subject: "Gracias por tu compra",
+    html: `<div>
+          <h1>Orden # ${ticket.code}</h1>
+          <p>Total de compra $ ${ticket.amount}.-</p>
+          <p>Gracias por su compra</p>
+          </div>`,
+  });
   let result = await ticketService.createTicket(ticket);
   res.render("yourPurchase", {
     ticket: ticket,
     products: productStock,
     productNoStock: productNoStock,
+    title: "Tu pedido",
+    style: "cart.css",
   });
 };

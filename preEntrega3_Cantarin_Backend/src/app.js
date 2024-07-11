@@ -11,6 +11,7 @@ const sessionRouter = require("./routes/api/session.router.js");
 const viewsRouter = require("./routes/views.router.js");
 const dotenv = require("dotenv");
 const passport = require("passport");
+const nodemailer = require("nodemailer");
 
 const { passportCall, authorization, generateToken } = require("./utils.js");
 const initializePassport = require("./config/passport.config.js");

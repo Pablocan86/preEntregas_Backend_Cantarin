@@ -5,9 +5,6 @@ const productModel = require("../dao/models/product.model.js");
 const CartManager = require("../dao/classes/cart.dao.js");
 const cartController = require("../controllers/cartController.js");
 
-const cartManager = new CartManager();
-
-//Muesra todos los carritos
 router.get("/carts", cartController.getcarts);
 
 router.get("/carts/:cid/purchase", cartController.checkout);
