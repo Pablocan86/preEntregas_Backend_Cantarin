@@ -104,22 +104,26 @@ exports.deleteProduct = async (req, res) => {
 exports.checkout = async (req, res) => {
   try {
     let { cid } = req.params;
+    let productStock = [];
+    let productNoStock = [];
+    let total = 0;
     let finalyCart = await cartService.getCartById(cid);
     let cart = await cartService.getCartByIdPopulate(cid);
-
-    let codeCrypto = crypto.randomBytes(10).toString("hex");
-    let code = `${req.session.user.last_name}__${codeCrypto}`;
-    //USAR UN SERVICE
-    let ticket = {
-      code: code,
-      purchase_datetime: new Date(),
-      amount: finalyCart.total,
-      purchaser: req.session.user.email,
-    };
-
-    // let result = await ticketService.createTicket(ticket);
-    // console.log(result);
-    res.render("checkout", { ticket: ticket, cart: cart });
+    let products = await productService.getProducts();
+    for (const product of cart.products) {
+      if (product.product.stock >= product.quantity) {
+        productStock.push({ title: product.product.title });
+        total = total + product.totalPrice;
+      } else {
+        productNoStock.push({ title: product.product.title });
+      }
+    }
+    console.log(total);
+    res.render("checkout", {
+      ProductosConStock: productStock,
+      ProductosSinStock: productNoStock,
+      total: total,
+    });
   } catch (error) {
     res.status(504).send(error);
   }
@@ -128,21 +132,48 @@ exports.checkout = async (req, res) => {
 exports.buy = async (req, res) => {
   let { cid } = req.params;
   let cart = await cartService.getCartByIdPopulate(cid);
+  let productStock = [];
+  let productNoStock = [];
+  let total = 0;
   for (const product of cart.products) {
     if (product.product.stock >= product.quantity) {
+      productStock.push({ title: product.product.title });
       const productId = product._id;
       let newStock = product.product.stock - product.quantity;
+      total = total + product.totalPrice;
       cart.total = cart.total - product.totalPrice;
-      await productService.updateQuantity(product.product._id, newStock);
-      await cartService.updateTotal(cid, cart.total);
+      // await productService.updateQuantity(product.product._id, newStock);
+      // await cartService.updateTotal(cid, cart.total);
       console.log(
         `Producto ${product.product.title} actualizado en base de datos`
       );
-      await cartService.updateCart(cid, productId);
+      // await cartService.updateCart(cid, productId);
     } else {
+      productNoStock.push({ title: product.product.title });
       console.log(`Producto ${product.product.title} sin stock`);
     }
+
+    // }
+    // let cartActualizaded = await cartService.getCartByIdPopulate(cid);
+    // res.send(cartActualizaded);
   }
-  let cartActualizaded = await cartService.getCartByIdPopulate(cid);
-  res.send(cartActualizaded);
+  // // PARA CREAR TICKET
+  // let finalyCart = await cartService.getCartById(cid);
+
+  let codeCrypto = `${req.session.user.last_name}_${crypto
+    .randomBytes(10)
+    .toString("hex")}`;
+  let code = codeCrypto;
+  let ticket = {
+    code: code,
+    purchase_datetime: new Date(),
+    amount: total,
+    purchaser: req.session.user.email,
+  };
+  let result = await ticketService.createTicket(ticket);
+  res.render("yourPurchase", {
+    ticket: ticket,
+    products: productStock,
+    productNoStock: productNoStock,
+  });
 };

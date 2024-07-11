@@ -1,11 +1,23 @@
 <div>Finaliza tu compra</div>
 <div><h3>PRODUCTOS</h3>
-  {{#each cart.products}}
-    <p>*{{this.product.title}}</p>
-  {{/each}}
+  {{#if ProductosConStock}}
+    <p>Productos en stock</p>
+    {{#each ProductosConStock}}
+      <p>{{this.title}}</p>
+    {{/each}}
+  {{/if}}
+  {{#if ProductosSinStock}}
+    <p>Productos sin stock</p>
+    {{#each ProductosSinStock}}
+      <p>{{this.title}}</p>
+    {{/each}}
+  {{/if}}
+  <p>Costo total de la compra ${{total}}.-</p>
+  <p>Los productos sin stock quedarán en el carrito</p>
 </div>
-<p>Código de Compra # {{ticket.code}}</p>
+{{!-- <p>Código de Compra # {{ticket.code}}</p>
 <p>Fecha: {{ticket.purchase_datetime}}</p>
 <p>Total: ${{ticket.amount}}.-</p>
-<p>Correo Usuario: {{ticket.purchaser}}</p>
-<form action=""><button>Comprar</button></form>
+<p>Correo Usuario: {{ticket.purchaser}}</p> --}}
+<form action="/carts/668d5a5838afb182bb7ae891/purchase" method="post"><button
+  >Comprar</button></form>
