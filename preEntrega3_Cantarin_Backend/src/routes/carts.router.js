@@ -1,8 +1,5 @@
 const express = require("express");
 const router = express.Router();
-const cartModel = require("../dao/models/cart.model.js");
-const productModel = require("../dao/models/product.model.js");
-const CartManager = require("../dao/classes/cart.dao.js");
 const cartController = require("../controllers/cartController.js");
 
 router.get("/carts", cartController.getcarts);
@@ -11,41 +8,13 @@ router.get("/carts/:cid/purchase", cartController.checkout);
 
 router.post("/carts/:cid/purchase", cartController.buy);
 
-//Crea un carrito
 router.post("/createcart", cartController.addCart);
-
-//Muestra carrito con productos detallados
-//(lo comento para que no tenga problemas con el otro router del handlebar)
-// router.get("/carts/:cid", async (req, res) => {
-//   try {
-//     let { cid } = req.params;
-//     let cart = await cartModel.findById(cid).populate("products.product");
-//     if (cart) {
-//       res.send({ products: cart });
-//     } else {
-//       res.send({ message: "No existe 🛒" });
-//     }
-//   } catch (error) {
-//     console.error("No existe carrito");
-//     res.json({ message: "No existe carrito" });
-//   }
-// });
 
 router.get("/carts/:cid", cartController.getCartById);
 
 router.post("/carts/:cid/products/:pid", cartController.addToCart);
 
-/*Ruta que agrega solo la cantidades de 1 en 1 */
 router.put("/carts/:cid/products/:pid", cartController.addToCart);
-
-//Prueba para acceder a los productos
-// router.get("/carrito/:cid/product/:pid", async (req, res) => {
-//   let { cid, pid } = req.params;
-//   console.log(pid);
-//   const cart = await cartModel.findById(cid);
-//   const producto = cart.products.find((p) => (p.product.id = pid));
-//   res.send({ producto: producto });
-// });
 
 router.delete("/carts/:cid/products/:pid", cartController.deleteProduct);
 

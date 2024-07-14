@@ -44,7 +44,6 @@ exports.getCartById = async (req, res) => {
   try {
     let cart = await cartService.getCartByIdPopulate(cid);
     let cartSimple = await cartService.getCartById(cid);
-    console.log(cart);
     res.render("cart", {
       cart,
       totalPrice: cartSimple.total,
@@ -131,7 +130,6 @@ exports.checkout = async (req, res) => {
         productNoStock.push({ title: product.product.title });
       }
     }
-    console.log(total);
     res.render("checkout", {
       ProductosConStock: productStock,
       ProductosSinStock: productNoStock,
